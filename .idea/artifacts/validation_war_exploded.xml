@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="validation:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/validation_war_exploded</output-path>
+    <root id="archive" name="validation_war exploded.war">
+      <element id="javaee-facet-resources" facet="validation/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="validation" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="sqljdbc41" />
+          <element id="library" level="application" name="jdbcUtils" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

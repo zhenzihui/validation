@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_validation" default="compile.module.validation">
+  <dirname property="module.validation.basedir" file="${ant.file.module_validation}"/>
+  
+  <property name="module.jdk.home.validation" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.validation" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.validation" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.validation" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="validation.output.dir" value="${module.validation.basedir}/out/production/validation"/>
+  <property name="validation.testoutput.dir" value="${module.validation.basedir}/out/test/validation"/>
+  
+  <path id="validation.module.bootclasspath">
+    <!-- 路径被列入编译bootclasspath -->
+  </path>
+  
+  <path id="validation.module.production.classpath">
+    <path refid="${module.jdk.classpath.validation}"/>
+    <path refid="library.tomcat_8.0.41.classpath"/>
+    <path refid="library.sqljdbc41.classpath"/>
+  </path>
+  
+  <path id="validation.runtime.production.module.classpath">
+    <pathelement location="${validation.output.dir}"/>
+    <path refid="library.sqljdbc41.classpath"/>
+  </path>
+  
+  <path id="validation.module.classpath">
+    <path refid="${module.jdk.classpath.validation}"/>
+    <pathelement location="${validation.output.dir}"/>
+    <path refid="library.tomcat_8.0.41.classpath"/>
+    <path refid="library.sqljdbc41.classpath"/>
+  </path>
+  
+  <path id="validation.runtime.module.classpath">
+    <pathelement location="${validation.testoutput.dir}"/>
+    <pathelement location="${validation.output.dir}"/>
+    <path refid="library.tomcat_8.0.41.classpath"/>
+    <path refid="library.sqljdbc41.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.validation">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.validation">
+    <patternset refid="excluded.from.module.validation"/>
+  </patternset>
+  
+  <path id="validation.module.sourcepath">
+    <dirset dir="${module.validation.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.validation" depends="compile.module.validation.production,compile.module.validation.tests" description="Compile module validation"/>
+  
+  <target name="compile.module.validation.production" depends="register.custom.compilers" description="Compile module validation; production classes">
+    <mkdir dir="${validation.output.dir}"/>
+    <javac2 destdir="${validation.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.validation}/javac">
+      <compilerarg line="${compiler.args.validation}"/>
+      <bootclasspath refid="validation.module.bootclasspath"/>
+      <classpath refid="validation.module.production.classpath"/>
+      <src refid="validation.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.validation"/>
+    </javac2>
+    
+    <copy todir="${validation.output.dir}">
+      <fileset dir="${module.validation.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.validation.tests" depends="register.custom.compilers,compile.module.validation.production" description="compile module validation; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.validation" description="清理模块">
+    <delete dir="${validation.output.dir}"/>
+    <delete dir="${validation.testoutput.dir}"/>
+  </target>
+</project>
