@@ -21,7 +21,7 @@ import java.sql.*;
 public class Validator extends HttpServlet {
     ServletContext context ;
 SqlHelper helper;
-HttpSession session;
+HttpSession session ;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -51,42 +51,41 @@ HttpSession session;
         System.out.print(sql);
       ResultSet set=  helper.executeQuery(sql);
 
+        boolean flag = false;
 
 
-//            if(set.next())
-//            {
-//               request.setAttribute("name",name);
-//               request.getRequestDispatcher("/success.jsp").forward(request,response);
-//            }else
-//            {
-//                result="登录失败,你输入的用户名：" +
-//                        name +
-//                        "密码:" +
-//                        psw;
-//
-//            }
-            boolean flag = false;
         try {
-            while(set.next())
+            if(set.next())
             {
-             flag=true;
-
-            }
-            if(flag)
-            {
+                flag=true;
+                request.setAttribute("name",name);
                 session.setAttribute("login",true);
                 String user = set.getString("name");
                 String id = set.getString("id");
                 request.setAttribute("name",user);
                 request.setAttribute("id",id);
+                HttpSession loginState =request.getSession(true);
+                loginState.setAttribute("login",true);
                 request.getRequestDispatcher("/success.jsp").forward(request,response);
+               request.getRequestDispatcher("/success.jsp").forward(request,response);
+            }else
+            {
+                result="登录失败,你输入的用户名：" +
+                        name +
+                        "密码:" +
+                        psw;
 
             }
-        } catch (SQLException e1) {
-            e1.printStackTrace();
+
+
+
+
+
+
+
+        } catch (SQLException e) {
+        e.printStackTrace();
         }
-
-
 
 
 

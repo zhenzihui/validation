@@ -17,10 +17,12 @@
 <body>
 <%
     String result;
-    if((boolean)session.getAttribute("login")) {
+    boolean loged =  (boolean)session.getAttribute("login");
+    if(loged) {
         String n = (String) request.getAttribute("id");
         String name = (String) request.getAttribute("name");
        result ="亲爱的会员"+name+","+"会员号："+n+",恭喜你登录成功！";
+
     }
     else
         {
@@ -29,9 +31,9 @@
         }
 %>
 
-<%=result%><button class="warning" value="注销" onclick=<%session.invalidate();%>></button>
+<%=result%><button class="btn-primary" value="注销" onclick=<%session.invalidate();%>></button>
 
-
+<p>SessionID:<%=session.getId()%></p>
 
 
 
